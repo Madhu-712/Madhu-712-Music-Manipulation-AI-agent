@@ -4,7 +4,7 @@ beautifulsoup4==4.12.3  # For parsing HTML (if needed for website URLs)
 
 gtts==0.2.1          # For text-to-speech (gTTS)
 
-
+phi
 altair==5.5.0
 annotated-types==0.7.0
 anyio==4.7.0
