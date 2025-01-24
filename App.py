@@ -1,6 +1,6 @@
 
 #pip install phidata google-generativeai youtube-transcript-api elevenlabs
-pip install streamlit phidata
+#pip install streamlit phidata
 
 import streamlit as st
 import os
