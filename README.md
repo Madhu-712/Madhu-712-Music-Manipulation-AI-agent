@@ -1,67 +1,115 @@
-# Madhu-712-Music-Manipulation-AI-agent
-
 ```markdown
-# Madhu-712 Music Manipulation AI Agent
+# LyricGenius - Your AI Music Companion 🎶
 
-This repository contains a Python application that leverages AI to manipulate music.  The core functionality is implemented in `app.py`.  This project is a work in progress and details are still being added.
+App link: [Your Streamlit App Link Here]
 
-**Functionality (currently implemented):**
+**Multimodal Agentic Workflow - Phidata**
 
-*(Please replace this section with a detailed description of the current functionalities of your AI agent.  Examples are provided below.  Be specific about what types of manipulations are possible, any libraries used, and any limitations.)*
+This app helps you complete song lyrics, translate them to Hindi, and provides comprehensive guidance on music production, from concept to final output.
 
-* **Example 1:**  Pitch Shifting:  The agent can shift the pitch of an audio file up or down by a specified number of semitones.
-* **Example 2:**  Tempo Changing:  The agent can adjust the tempo of an audio file, speeding it up or slowing it down.
-* **Example 3:**  (Add another functionality here)
+## Features 🌟
+
+* **Image Upload:** Upload an image containing a snippet of song lyrics.
+* **Camera Capture:** Take a photo of your lyrics directly through the app.
+* **AI-Powered Lyric Completion:**  Intelligently completes your lyrics, maintaining style and theme using Google Gemini.
+* **Hindi Translation:** Accurate and poetic translation of your lyrics to Hindi.
+* **Song Meaning & Interpretation:**  Explores themes and potential meanings within your lyrics.
+* **Genre Identification & Suggestions:** Identifies the song's genre and suggests fitting alternatives.
+* **Music Production Guidance:** Step-by-step advice on producing your song, including DAW recommendations, editing process, and collaboration tools.
+* **Dubbing Tips:** Practical tips for dubbing your song in Hindi.
+
+## Installation 🚀
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/yourusername/LyricGenius.git  # Replace with your repository URL
+   cd LyricGenius
+   ```
+
+2. **Create a virtual environment:**
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Configuration ⚙️
+
+1. **Create a `secrets.toml` file in the project root:**
+
+   ```toml
+   GEMINI_KEY = "YOUR_GEMINI_API_KEY" 
+   # TAVILY_KEY = "YOUR_TAVILY_API_KEY"  # Uncomment if using Tavily
+   ```
+
+## Usage 💡
+
+1. **Run the Streamlit app:**
+
+   ```bash
+   streamlit run app.py
+   ```
+
+2. **Open your browser and navigate to `http://localhost:8501`**
+
+3. **Choose one of two options to analyze your lyrics:**
+    * Upload an image of your lyrics
+    * Take a photo of your lyrics using your camera
 
 
-**Libraries Used:**
+## Project Structure 📁
 
-* *(List all the libraries used, e.g., librosa, pyaudioanalysis, TensorFlow, PyTorch, etc.)*
-
-
-**Dependencies:**
-
-To run this application, you'll need to install the necessary libraries.  You can do this using pip:
-
-```bash
-pip install -r requirements.txt
+```
+LyricGenius/
+├── app.py          # Main Streamlit application
+├── constants.py     # System prompts and constants
+├── requirements.txt # Project dependencies
+└── README.md       # Project documentation
 ```
 
-*(Create a `requirements.txt` file listing your project's dependencies.)*
+## Dependencies 📚
+
+* `streamlit`
+* `phidata`
+* `Pillow`
+* `google-generativeai`
+* `tavily-python` # If using Tavily
 
 
-**How to Run:**
+## Contributing 🤝
 
-1. Clone the repository:  `git clone https://github.com/Madhu-712/Madhu-712-Musics-Manipulation-AI-agent.git`
-2. Navigate to the project directory: `cd Madhu-712-Musics-Manipulation-AI-agent`
-3. Install dependencies: `pip install -r requirements.txt`
-4. Run the application: `python app.py` *(or provide more specific instructions if needed)*
+Contributions are welcome!  Please fork the repository and submit a pull request.
 
+## License 📄
 
-**Future Improvements:**
-
-* *(List planned features and improvements.)*
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. (You'll need to create a LICENSE file).
 
 
-**Contributing:**
+## Acknowledgments 👏
 
-Contributions are welcome!  Please feel free to submit pull requests.
-
-
-**License:**
-
-*(Specify the license under which your project is released, e.g., MIT License.)*
-
-
-**Contact:**
-
-*(Your contact information or a link to your contact information.)*
-
-
-**Disclaimer:**
-
-*(Add any necessary disclaimers, e.g., regarding the quality of the results or any limitations of the AI agent.)*
+* **Phidata** for the Multimodal Agent framework.
+* **Google Gemini AI** for powering the AI analysis.
+* **Streamlit** for the user-friendly web interface.
+* **Tavily** for search capabilities (if used).
 ```
 
+**Key Changes and Improvements:**
 
-Remember to replace the placeholder comments with the actual details of your project.  Also, create a `requirements.txt` file listing your project's dependencies.  A well-documented README is crucial for making your project understandable and accessible to others.
+*   **Project Name and Description:** Updated to reflect the music app's purpose.
+*   **Features:**  Accurately listed the app's features.
+*   **Installation and Usage:** Clear instructions.
+*   **Configuration:**  Instructions for setting up API keys.
+*   **Project Structure:**  Simplified and accurate.
+*   **Dependencies:**  Lists the required libraries.
+*   **Contributing:** Encourages contributions.
+*   **License:**  Includes license information. (Remember to create a LICENSE file).
+*   **Acknowledgments:**  Credits the relevant tools and frameworks.
+
+Remember to replace placeholders like `[Your Streamlit App Link Here]` and `https://github.com/yourusername/LyricGenius.git` with the actual values.  Also, consider adding a screenshot or GIF to the README to visually demonstrate how the app works.
