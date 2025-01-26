@@ -1,120 +1,108 @@
 
+#pip install streamlit phidata google-generativeai Pillow pytesseract
 
-
-
-
+# app.py
 import streamlit as st
 import os
-from io import StringIO
+from PIL import Image
+from io import BytesIO
 from phi.agent import Agent
 from phi.model.google import Gemini
-from phi.tools.web import WebTools
-from phi.tools.tavily import TavilyTools
-from elevenlabs import generate, set_api_key
-from Constants import SYSTEM_PROMPT, INSTRUCTIONS
+# from phi.tools.tavily import TavilyTools  #Removed: Not reliably handling image analysis
+from tempfile import NamedTemporaryFile
+from constants import SYSTEM_PROMPT, INSTRUCTIONS
 
-os.environ['TAVILY_API_KEY'] = st.secrets['TAVILY_KEY']
-os.environ['GOOGLE_API_KEY'] = st.secrets['GEMINI_KEY']
+# Configuration: Replace with your actual API keys
+os.environ['GOOGLE_API_KEY'] = st.secrets.get('GEMINI_KEY') # Use st.secrets.get() for safety
+os.environ['TAVILY_API_KEY'] = st.secrets.get('TAVILY_KEY')
+MAX_IMAGE_WIDTH = 300
 
+def resize_image_for_display(image_file):
+    """Resize image for display only, returns bytes"""
+    img = Image.open(image_file)
+    aspect_ratio = img.height / img.width
+    new_height = int(MAX_IMAGE_WIDTH * aspect_ratio)
+    img = img.resize((MAX_IMAGE_WIDTH, new_height), Image.Resampling.LANCZOS)
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
 
-
+@st.cache_resource
 def get_agent():
     return Agent(
-        model=Gemini(id="gemini-2.0-flash-exp" ), # Or the best Gemini model available
+        model=Gemini(id="gemini-2.0-pro-vision-exp"), # Or another suitable large language model
         system_prompt=SYSTEM_PROMPT,
         instructions=INSTRUCTIONS,
-        tools=[TavilyTools(api_key=os.getenv("TAVILY_API_KEY"))],
+        tools=[TavilyTools(api_key=os.getenv("TAVILY_API_KEY"))],  # Add Tavily
         markdown=True,
     )
 
-
-
-def generate_audio(text):
-    try:
-        audio = generate(text=text)
-        return audio
-    except Exception as e:
-        st.error(f"Error generating audio: {e}")
-        return None
-
-
-
-def download_lyrics(lyrics_content, filename="combined_lyrics.txt"):
-    file_stringio = StringIO(lyrics_content)
-    st.download_button(
-        label="Download Lyrics",
-        data=file_stringio,
-        file_name=filename,
-        mime="text/plain",
-    )
-
-
-
-def process_input(input_data, target_languages, target_genre, fusion):
+def analyze_image(image_path):
+    """Analyzes the image, extracts text with Gemini, and sends to the agent"""
     agent = get_agent()
-    instruction = {
-        "Input": input_data,
-        "Target Languages": target_languages,
-        "Target Genre": target_genre,
-        "Fusion": fusion
-    }
-    response = agent.run(instruction)
-    return response
+    with st.spinner('Analyzing image and lyrics...'): #Improved message
+        try:
+            response = agent.run(
+                f"Analyze the lyrics in the image",
+                images=[image_path] # Pass the image to Gemini
+            )
+            st.markdown(response.content)
 
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+
+def save_uploaded_file(uploaded_file):
+    """Saves uploaded file to a temp file, returns path"""
+    with NamedTemporaryFile(dir='.', suffix='.jpg', delete=False) as f:
+        f.write(uploaded_file.getbuffer())
+        return f.name
 
 def main():
-    st.title("🎶 LyricMix AI DJ")
+    st.title("🎶 Lyric Assistant & Music Production Guide")
 
-    input_method = st.radio("Input Method:", ["YouTube URLs", "Website URLs (Lyrics)", "Text"], index=0)
+    # Session state initialization
+    if 'selected_example' not in st.session_state:
+        st.session_state.selected_example = None
+    if 'analyze_clicked' not in st.session_state:
+        st.session_state.analyze_clicked = False
 
-    input_data = []
-    if input_method == "YouTube URLs":
-       num_urls = st.number_input("Number of YouTube URLs:", min_value=1, value=1)
-       for i in range(num_urls):
-            input_data.append(st.text_input(f"YouTube URL {i+1}:"))
-        
-    elif input_method == "Website URLs (Lyrics)":
-         num_urls = st.number_input("Number of Website URLs:", min_value=1, value=1)
-         for i in range(num_urls):
-            input_data.append(st.text_input(f"Website URL {i+1}:"))
-    else:  # Text input
-       input_data.append(st.text_area("Enter lyrics:"))
+    tab_upload, tab_camera = st.tabs([
+        "📤 Upload Image",
+        "📸 Take Photo"
+    ])
+
+    # Upload Image Tab
+    with tab_upload:
+        uploaded_file = st.file_uploader(
+            "Upload image of lyrics",
+            type=["jpg", "jpeg", "png"],
+            help="Upload a clear image of your song lyrics"
+        )
+        if uploaded_file:
+            resized_image = resize_image_for_display(uploaded_file)
+            st.image(resized_image, caption="Uploaded Image", use_container_width=False, width=MAX_IMAGE_WIDTH)
+            if st.button("Analyze Lyrics", key="analyze_upload"):
+                 temp_path = save_uploaded_file(uploaded_file)
+                 analyze_image(temp_path)
+                 os.unlink(temp_path) # Clean up temp file
 
 
-    target_languages = st.multiselect("Target Languages (Optional):", ["Hindi", "Kannada", "Spanish", "French", "German", "Japanese", "etc."])
-    target_genre = st.text_input("Target Genre (Optional):")
-    fusion = st.checkbox("Fuse Lyrics", value=False)
-
-
-    if st.button("Process"):
-        with st.spinner("Processing..."):
-            response = process_input(input_data, target_languages, target_genre, fusion)
-
-            try:
-                lyrics_start = response.content.find("```") + 3
-                lyrics_end = response.content.find("```", lyrics_start)
-                lyrics_content = response.content[lyrics_start:lyrics_end].strip()
-                download_lyrics(lyrics_content)
-
-                st.subheader("Audio Generation ")
-                if st.button("Generate Audio from Lyrics"):
-                    with st.spinner("Generating audio..."):
-                        audio_content = generate_audio(lyrics_content)
-                        if audio_content:
-                            st.audio(audio_content, format="audio/mpeg")
-
-                explanation = (response.content[:lyrics_start-3] + response.content[lyrics_end+3:]).strip()
-                st.write(explanation)
-
-            except Exception as e:
-                st.error(f"Could not extract lyrics or there are no lyrics returned: {e}")
-                st.write(response.content)
-
+    # Camera Input Tab
+    with tab_camera:
+        camera_photo = st.camera_input("Take a picture of your lyrics")
+        if camera_photo:
+            resized_image = resize_image_for_display(camera_photo)
+            st.image(resized_image, caption="Captured Photo", use_container_width=False, width=MAX_IMAGE_WIDTH)
+            if st.button("Analyze Lyrics", key="analyze_camera"):
+                temp_path = save_uploaded_file(camera_photo)
+                analyze_image(temp_path)
+                os.unlink(temp_path) # Clean up temp file
 
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="LyricMix AI DJ",
+        page_title="Lyric Assistant",
         layout="wide",
+        initial_sidebar_state="collapsed"
     )
     main()
