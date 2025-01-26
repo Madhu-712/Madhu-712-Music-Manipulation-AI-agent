@@ -1,6 +1,6 @@
 ```markdown
 
-# LyricGenius - Your AI Music Companion 🎶  
+# LyricGenius - Your AI Music Companion 🎶 🎵🎶🎵🥁👨‍🎤👩‍🎤🎙🎤🎸🎹📯🎺🎷📯
 App link: https://music-lyricical-agentnt.streamlit.app/
 
 **Multimodal Agentic Workflow - Phidata**
