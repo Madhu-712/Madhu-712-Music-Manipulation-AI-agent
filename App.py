@@ -10,7 +10,7 @@ from phi.agent import Agent
 from phi.model.google import Gemini
 # from phi.tools.tavily import TavilyTools  #Removed: Not reliably handling image analysis
 from tempfile import NamedTemporaryFile
-from constants import SYSTEM_PROMPT, INSTRUCTIONS
+from Constants import SYSTEM_PROMPT, INSTRUCTIONS
 
 # Configuration: Replace with your actual API keys
 os.environ['GOOGLE_API_KEY'] = st.secrets.get('GEMINI_KEY') # Use st.secrets.get() for safety
