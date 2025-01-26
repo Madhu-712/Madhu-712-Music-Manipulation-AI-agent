@@ -1,6 +1,12 @@
 ```markdown
-# LyricGenius - Your AI Music Companion 🎶
+<style>
+h1#lyricgenius {
+    font-size: 3em;  /* Adjust the size as needed */
+    /* Add other styles like color, font-family, etc. */
+}
+</style>
 
+# LyricGenius - Your AI Music Companion 🎶 {#lyricgenius} <br>
 App link: [Your Streamlit App Link Here]
 
 **Multimodal Agentic Workflow - Phidata**
