@@ -1,8 +1,8 @@
 ```markdown
 
 # LyricGenius - Your AI Music Companion 🎶 🎵🎶🎵🥁👨‍🎤👩‍🎤🎙🎤🎸🎹📯🎺🎷📯
-App link: https://music-lyricical-agentnt.streamlit.app/
-
+App link: 
+https://musiclyricsagent.streamlit.app/
 **Multimodal Agentic Workflow - Phidata**
 
 This app helps you complete song lyrics, translate them to Hindi, and provides comprehensive guidance on music production, from concept to final output.
